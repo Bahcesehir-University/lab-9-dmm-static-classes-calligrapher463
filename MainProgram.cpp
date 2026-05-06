@@ -28,36 +28,102 @@ private:
     int  capacity;   // maximum number of elements
     int  count;      // current number of elements
 
+ 
 public:
     // Constructor: allocate array of given capacity
     IntArray(int cap);
 
+    IntArray(int cap){
+        capacity = cap;
+        count = 0;
+        data = new int[capacity]; 
+    }
+ 
     // Destructor: free dynamically allocated memory
     ~IntArray();
 
+    ~IntArray() {
+        delete[] data;
+    }
+ 
     // Copy Constructor: deep copy another IntArray
     IntArray(const IntArray& other);
 
+    IntArray(const IntArray& other){
+        capacity = other.capacity;
+        count = other.count;
+        data = new int[capacity];
+        for (int i = 0; i < count; i++) {
+            data[i] = other.data[i];
+        } 
+    }
     // Copy Assignment Operator: deep copy with self-assignment check
     IntArray& operator=(const IntArray& other);
 
+    IntArray& operator=(const IntArray& other){
+        if (this != &other) {
+            delete[] data;
+            capacity = other.capacity;
+            count = other.count;
+            data = new int[capacity];
+            for (int i = 0; i < count; i++) {
+                data[i] = other.data[i];
+            }
+        }
+        return *this;
+    }
+ 
     // Add an element to the end. Return true if successful, false if full.
     bool add(int value);
 
+    bool add(int value){
+        if (count < capacity) {
+            data[count] = value;
+            count++;
+            return true;
+        }
+        return false;
+    }
+ 
     // Get element at index. Return -1 if index is out of bounds.
     int get(int index) const;
 
+    int get(int index) const {
+        if (index >= 0 && index < count) {
+            return data[index];
+        }
+        return -1;
+    }
+ 
     // Return current number of elements
     int size() const;
 
+    int size() const { 
+        return count; 
+    }
     // Return the capacity
     int getCapacity() const;
 
+    int getCapacity() const {
+        return capacity; 
+    }
+ 
     // Check if the array is empty
     bool isEmpty() const;
 
+    bool isEmpty() const { 
+        return count == 0;
+    }
+ 
     // Remove the last element. Return true if successful, false if empty.
     bool removeLast();
+    bool removeLast() {
+        if (count > 0) {
+            count--; // Sadece sayacı azaltmak yeterli, bellek silinmez
+            return true;
+        }
+        return false;
+    }
 };
  
 // -------------------------------------------------
