@@ -7,17 +7,16 @@
 // This file contains ALL code for this lab.
 // Do NOT create any .h files. Everything stays here.
 // ============================================================
-
+ 
 #include <iostream>
 #include <string>
 #include <cstring>
-
 using namespace std;
-
+ 
 // ================================================================
 // CLASS DEFINITIONS
 // ================================================================
-
+ 
 // -------------------------------------------------
 // Class: IntArray
 // Purpose: A dynamic integer array that manages
@@ -28,39 +27,85 @@ private:
     int* data;       // pointer to dynamically allocated array
     int  capacity;   // maximum number of elements
     int  count;      // current number of elements
-
+ 
 public:
     // Constructor: allocate array of given capacity
-    IntArray(int cap);
-
+    IntArray(int cap){
+        capacity = cap;
+        count = 0;
+        data = new int[capacity]; 
+    }
+ 
     // Destructor: free dynamically allocated memory
-    ~IntArray();
-
+    ~IntArray() {
+        delete[] data;
+    }
+ 
     // Copy Constructor: deep copy another IntArray
-    IntArray(const IntArray& other);
-
+    IntArray(const IntArray& other){
+        capacity = other.capacity;
+        count = other.count;
+        data = new int[capacity];
+        for (int i = 0; i < count; i++) {
+            data[i] = other.data[i];
+        } 
+    }
     // Copy Assignment Operator: deep copy with self-assignment check
-    IntArray& operator=(const IntArray& other);
-
+    IntArray& operator=(const IntArray& other){
+        if (this != &other) {
+            delete[] data;
+            capacity = other.capacity;
+            count = other.count;
+            data = new int[capacity];
+            for (int i = 0; i < count; i++) {
+                data[i] = other.data[i];
+            }
+        }
+        return *this;
+    }
+ 
     // Add an element to the end. Return true if successful, false if full.
-    bool add(int value);
-
+    bool add(int value){
+        if (count < capacity) {
+            data[count] = value;
+            count++;
+            return true;
+        }
+        return false;
+    }
+ 
     // Get element at index. Return -1 if index is out of bounds.
-    int get(int index) const;
-
+    int get(int index) const {
+        if (index >= 0 && index < count) {
+            return data[index];
+        }
+        return -1;
+    }
+ 
     // Return current number of elements
-    int size() const;
-
+    int size() const { 
+        return count; 
+    }
     // Return the capacity
-    int getCapacity() const;
-
+    int getCapacity() const {
+        return capacity; 
+    }
+ 
     // Check if the array is empty
-    bool isEmpty() const;
-
+    bool isEmpty() const { 
+        return count == 0;
+    }
+ 
     // Remove the last element. Return true if successful, false if empty.
-    bool removeLast();
+    bool removeLast() {
+        if (count > 0) {
+            count--; // Sadece sayacı azaltmak yeterli, bellek silinmez
+            return true;
+        }
+        return false;
+    }
 };
-
+ 
 // -------------------------------------------------
 // Class: Tracker
 // Purpose: A static utility class that counts how
@@ -70,178 +115,221 @@ public:
 class Tracker {
 private:
     static int objectCount;
-
+ 
     // Private constructor prevents instantiation
     Tracker() = delete;
-
+ 
 public:
     // Increment the counter (call from IntArray constructor)
-    static void objectCreated();
-
+    static void objectCreated() {
+        objectCount++;
+    }
+ 
     // Decrement the counter (call from IntArray destructor)
-    static void objectDestroyed();
-
+    static void objectDestroyed() {
+        objectCount--;
+    }
+ 
     // Return current count of live IntArray objects
-    static int getActiveCount();
-
+    static int getActiveCount() {
+        return objectCount;
+    }
+ 
     // Reset counter to zero (for testing purposes)
-    static void resetCount();
+    static void resetCount() {
+        objectCount = 0;
+    }
 };
-
+ 
 // ================================================================
 // STATIC MEMBER INITIALIZATION
 // ================================================================
-
+ 
 // TODO 1: Initialize Tracker's static member variable
 // Hint: int Tracker::objectCount = ???;
-
-
+ 
+ 
 // ================================================================
 // TRACKER FUNCTION IMPLEMENTATIONS
 // ================================================================
-
+ 
 void Tracker::objectCreated() {
     // TODO 2: Increment objectCount
+    objectCount++;
 }
-
+ 
 void Tracker::objectDestroyed() {
     // TODO 3: Decrement objectCount
+    objectCount--;
 }
-
+ 
 int Tracker::getActiveCount() {
     // TODO 4: Return objectCount
-    return 0;
+    return objectCount;
 }
-
+ 
 void Tracker::resetCount() {
     // TODO 5: Reset objectCount to 0
+    objectCount = 0;
 }
-
+ 
 // ================================================================
 // INTARRAY FUNCTION IMPLEMENTATIONS
 // ================================================================
-
+ 
 // Constructor
 IntArray::IntArray(int cap) {
     // TODO 6: Allocate dynamic array of size cap using 'new'
+    capacity = cap;
     //         Initialize capacity, count
+    count = 0;
+    data = new int[capacity];
     //         Notify Tracker that an object was created
-
+    tracker::objectCreated();
 }
-
+ 
 // Destructor
 IntArray::~IntArray() {
     // TODO 7: Free the dynamic array using 'delete[]'
+    delete[] data;
     //         Notify Tracker that an object was destroyed
-
+    tracker::objectDestroyed();
 }
-
+ 
 // Copy Constructor
 IntArray::IntArray(const IntArray& other) {
     // TODO 8: Deep copy - allocate new memory and copy elements
+    capacity = other.capacity;
+    count = other.count;
+    data = new int[capacity];
+    for (int i = 0 ; i < count ; i++) {
+        data[i] = other.data[i];
+    }
     //         Don't forget to copy capacity and count
     //         Notify Tracker that an object was created
-
+    tracker::objectCreated();
 }
-
+ 
 // Copy Assignment Operator
 IntArray& IntArray::operator=(const IntArray& other) {
     // TODO 9: Implement copy assignment
     //         1. Check for self-assignment (this != &other)
+    if (this != &other) 
+    
     //         2. Delete old memory
+    delete[] data;
     //         3. Allocate new memory
+    capacity = other.capacity;
+    count = other.count;
+    data = new int[capacity];
+    
+    for (int i = 0 ; i < count ; i++) {
+        data[i] = other.data[i];
+    }
     //         4. Copy all elements, capacity, and count
     //         5. Return *this
     //         NOTE: Do NOT call Tracker here (object already exists)
-
+ 
     return *this;
 }
-
+ 
 // Add element
 bool IntArray::add(int value) {
     // TODO 10: If count < capacity, add value at data[count],
+    if (count > capacity) {
+        data[count] = value;
+        count++;
+        return true;
+    }
     //          increment count, return true.
     //          Otherwise return false.
     return false;
 }
-
+ 
 // Get element at index
 int IntArray::get(int index) const {
     // TODO 11: If index is valid (0 <= index < count), return data[index].
+    if (index >= 0 && index < count) {
+        return data[index];
+    }
     //          Otherwise return -1.
     return -1;
 }
-
+ 
 // Size
 int IntArray::size() const {
     // TODO 12: Return count
-    return 0;
+    return count;
 }
-
+ 
 // Capacity
 int IntArray::getCapacity() const {
     // TODO 13: Return capacity
-    return 0;
+    return capacity;
 }
-
+ 
 // isEmpty
 bool IntArray::isEmpty() const {
     // TODO 14: Return true if count == 0
-    return true;
+    return count == 0;
 }
-
+ 
 // Remove last element
 bool IntArray::removeLast() {
     // TODO 15: If not empty, decrement count and return true.
+    if (count > 0) {
+        count--;
+        return true;
+    }
     //          Otherwise return false.
     return false;
 }
-
+ 
 // ================================================================
 // MAIN FUNCTION
 // ================================================================
-
+ 
 int main() {
     cout << "=== Dynamic Memory & Static Classes Lab ===" << endl;
     cout << endl;
-
+ 
     // Test basic creation
     cout << "[1] Creating IntArray with capacity 5..." << endl;
     IntArray arr(5);
     cout << "    Active objects: " << Tracker::getActiveCount() << endl;
-
+ 
     // Test adding elements
     cout << "[2] Adding elements: 10, 20, 30" << endl;
     arr.add(10);
     arr.add(20);
     arr.add(30);
     cout << "    Size: " << arr.size() << ", Capacity: " << arr.getCapacity() << endl;
-
+ 
     // Test get
     cout << "[3] Elements: ";
     for (int i = 0; i < arr.size(); i++) {
         cout << arr.get(i) << " ";
     }
     cout << endl;
-
+ 
     // Test copy constructor
     cout << "[4] Copy constructing arr2 from arr..." << endl;
     IntArray arr2(arr);
     cout << "    Active objects: " << Tracker::getActiveCount() << endl;
     cout << "    arr2 size: " << arr2.size() << endl;
-
+ 
     // Test copy assignment
     cout << "[5] Creating arr3(2), then assigning arr to arr3..." << endl;
     IntArray arr3(2);
     cout << "    Active objects: " << Tracker::getActiveCount() << endl;
     arr3 = arr;
     cout << "    arr3 size after assignment: " << arr3.size() << endl;
-
+ 
     // Test removeLast
     cout << "[6] Removing last from arr..." << endl;
     arr.removeLast();
     cout << "    arr size after removeLast: " << arr.size() << endl;
-
+ 
     // Test scope-based destruction
     cout << "[7] Testing scope-based destruction..." << endl;
     {
@@ -250,7 +338,7 @@ int main() {
         cout << "    Inside scope - Active objects: " << Tracker::getActiveCount() << endl;
     }
     cout << "    After scope  - Active objects: " << Tracker::getActiveCount() << endl;
-
+ 
     cout << endl;
     cout << "=== Lab Complete ===" << endl;
     return 0;
