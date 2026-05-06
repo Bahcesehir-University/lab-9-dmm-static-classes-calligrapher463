@@ -27,83 +27,37 @@ private:
     int* data;       // pointer to dynamically allocated array
     int  capacity;   // maximum number of elements
     int  count;      // current number of elements
- 
+
 public:
     // Constructor: allocate array of given capacity
-    IntArray(int cap){
-        capacity = cap;
-        count = 0;
-        data = new int[capacity]; 
-    }
- 
+    IntArray(int cap);
+
     // Destructor: free dynamically allocated memory
-    ~IntArray() {
-        delete[] data;
-    }
- 
+    ~IntArray();
+
     // Copy Constructor: deep copy another IntArray
-    IntArray(const IntArray& other){
-        capacity = other.capacity;
-        count = other.count;
-        data = new int[capacity];
-        for (int i = 0; i < count; i++) {
-            data[i] = other.data[i];
-        } 
-    }
+    IntArray(const IntArray& other);
+
     // Copy Assignment Operator: deep copy with self-assignment check
-    IntArray& operator=(const IntArray& other){
-        if (this != &other) {
-            delete[] data;
-            capacity = other.capacity;
-            count = other.count;
-            data = new int[capacity];
-            for (int i = 0; i < count; i++) {
-                data[i] = other.data[i];
-            }
-        }
-        return *this;
-    }
- 
+    IntArray& operator=(const IntArray& other);
+
     // Add an element to the end. Return true if successful, false if full.
-    bool add(int value){
-        if (count < capacity) {
-            data[count] = value;
-            count++;
-            return true;
-        }
-        return false;
-    }
- 
+    bool add(int value);
+
     // Get element at index. Return -1 if index is out of bounds.
-    int get(int index) const {
-        if (index >= 0 && index < count) {
-            return data[index];
-        }
-        return -1;
-    }
- 
+    int get(int index) const;
+
     // Return current number of elements
-    int size() const { 
-        return count; 
-    }
+    int size() const;
+
     // Return the capacity
-    int getCapacity() const {
-        return capacity; 
-    }
- 
+    int getCapacity() const;
+
     // Check if the array is empty
-    bool isEmpty() const { 
-        return count == 0;
-    }
- 
+    bool isEmpty() const;
+
     // Remove the last element. Return true if successful, false if empty.
-    bool removeLast() {
-        if (count > 0) {
-            count--; // Sadece sayacı azaltmak yeterli, bellek silinmez
-            return true;
-        }
-        return false;
-    }
+    bool removeLast();
 };
  
 // -------------------------------------------------
@@ -115,30 +69,22 @@ public:
 class Tracker {
 private:
     static int objectCount;
- 
+
     // Private constructor prevents instantiation
     Tracker() = delete;
- 
+
 public:
     // Increment the counter (call from IntArray constructor)
-    static void objectCreated() {
-        objectCount++;
-    }
- 
+    static void objectCreated();
+
     // Decrement the counter (call from IntArray destructor)
-    static void objectDestroyed() {
-        objectCount--;
-    }
- 
+    static void objectDestroyed();
+
     // Return current count of live IntArray objects
-    static int getActiveCount() {
-        return objectCount;
-    }
- 
+    static int getActiveCount();
+
     // Reset counter to zero (for testing purposes)
-    static void resetCount() {
-        objectCount = 0;
-    }
+    static void resetCount();
 };
  
 // ================================================================
@@ -185,7 +131,6 @@ IntArray::IntArray(int cap) {
     count = 0;
     data = new int[capacity];
     //         Notify Tracker that an object was created
-    tracker::objectCreated();
 }
  
 // Destructor
@@ -193,7 +138,6 @@ IntArray::~IntArray() {
     // TODO 7: Free the dynamic array using 'delete[]'
     delete[] data;
     //         Notify Tracker that an object was destroyed
-    tracker::objectDestroyed();
 }
  
 // Copy Constructor
@@ -207,7 +151,6 @@ IntArray::IntArray(const IntArray& other) {
     }
     //         Don't forget to copy capacity and count
     //         Notify Tracker that an object was created
-    tracker::objectCreated();
 }
  
 // Copy Assignment Operator
