@@ -197,6 +197,7 @@ IntArray::IntArray(int cap) {
     count = 0;
     data = new int[capacity];
     //         Notify Tracker that an object was created
+    Tracker::objectCreated();
 }
  
 // Destructor
@@ -204,6 +205,7 @@ IntArray::~IntArray() {
     // TODO 7: Free the dynamic array using 'delete[]'
     delete[] data;
     //         Notify Tracker that an object was destroyed
+    Tracker::objectDestroyed();
 }
  
 // Copy Constructor
@@ -217,6 +219,7 @@ IntArray::IntArray(const IntArray& other) {
     }
     //         Don't forget to copy capacity and count
     //         Notify Tracker that an object was created
+    Tracker::objectCreated();
 }
  
 // Copy Assignment Operator
